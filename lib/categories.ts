@@ -27,8 +27,8 @@ export const ALL_CATEGORIES = [
   "Board Game",
 ] as const;
 
-// Letters excluding rare ones (Q, X, Z) for better gameplay
-const LETTERS = "ABCDEFGHIJKLMNOPRSTUVW".split("");
+// Letters excluding difficult ones (Q, U, X, Z) for better gameplay
+const LETTERS = "ABCDEFGHIJKLMNOPRSTW".split("");
 
 export function getDailyPuzzle(date?: Date) {
   const rand = getDailyRandom(date);
