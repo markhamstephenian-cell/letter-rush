@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #1a1f2e;
+  --color-charcoal: #242938;
+  --color-cream: #f5f0e8;
+  --color-accent: #d4a574;
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Base */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-navy);
+  color: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Safe area padding for iPhone notch/dynamic island */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Prevent iOS zoom on input focus (font-size >= 16px) */
+input {
+  font-size: 16px;
+}
+
+/* Smooth scrolling on iOS */
+html {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tap highlight removal for buttons on iOS */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent pull-to-refresh interference during game */
+.no-overscroll {
+  overscroll-behavior: none;
+}
