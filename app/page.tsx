@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import GameBoard from "@/components/GameBoard";
 import Results from "@/components/Results";
@@ -15,18 +16,34 @@ import {
   PlayerData,
   GameRecord,
 } from "@/lib/storage";
-import { getTodayDateString } from "@/lib/daily";
+import { getTodayDateString, getOffsetDate } from "@/lib/daily";
 
 type Screen = "landing" | "play" | "validating" | "results" | "stats";
 
 export default function Home() {
+  return (
+    <Suspense>
+      <HomeInner />
+    </Suspense>
+  );
+}
+
+function HomeInner() {
+  const searchParams = useSearchParams();
+  const dayOffset = parseInt(searchParams.get("day") || "0", 10) || 0;
+
   const [screen, setScreen] = useState<Screen>("landing");
   const [results, setResults] = useState<AnswerResult[]>([]);
   const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const [todayGame, setTodayGame] = useState<GameRecord | null>(null);
 
-  const dateStr = getTodayDateString();
-  const puzzle = getDailyPuzzle();
+  const simulatedDate = useMemo(() => getOffsetDate(dayOffset), [dayOffset]);
+  const dateStr = useMemo(() => {
+    if (dayOffset === 0) return getTodayDateString();
+    const d = simulatedDate;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }, [dayOffset, simulatedDate]);
+  const puzzle = useMemo(() => getDailyPuzzle(simulatedDate), [simulatedDate]);
 
   useEffect(() => {
     const data = loadPlayerData();
@@ -35,7 +52,11 @@ export default function Home() {
     if (existing) {
       setTodayGame(existing);
       setResults(existing.results);
+    } else {
+      setTodayGame(null);
+      setResults([]);
     }
+    setScreen("landing");
   }, [dateStr]);
 
   const played = hasPlayedToday(dateStr);
@@ -82,7 +103,6 @@ export default function Home() {
         setTodayGame(record);
         setScreen("results");
       } catch {
-        // On validation failure, mark all as valid (graceful degradation)
         const fallbackResults: AnswerResult[] = puzzle.categories.map(
           (category, i) => ({
             category,
@@ -119,13 +139,19 @@ export default function Home() {
       <div className="safe-top" />
       <Header />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
+        {dayOffset !== 0 && (
+          <div className="mb-4 rounded-lg border border-accent/20 bg-accent/5 px-3 py-2 text-center text-sm text-accent/70">
+            Test mode &middot; Day {dayOffset} &middot; {dateStr}
+          </div>
+        )}
+
         {screen === "landing" && (
           <div className="flex flex-col items-center gap-6 py-6 sm:gap-8 sm:py-8">
             {played && todayGame ? (
               <>
                 <div className="flex flex-col items-center gap-2">
                   <p className="text-sm tracking-widest text-cream/50 uppercase">
-                    Today&apos;s Puzzle Complete
+                    {dayOffset ? "Puzzle" : "Today\u2019s Puzzle"} Complete
                   </p>
                   <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-accent/30 bg-accent/10">
                     <span className="font-serif text-4xl font-bold text-accent">
@@ -167,7 +193,7 @@ export default function Home() {
                   onClick={() => setScreen("play")}
                   className="w-full max-w-xs rounded-xl bg-accent px-8 py-3.5 font-serif text-lg font-semibold text-navy transition-all active:scale-[0.98] sm:w-auto"
                 >
-                  Play Today&apos;s Puzzle
+                  {dayOffset ? "Play This Puzzle" : "Play Today\u2019s Puzzle"}
                 </button>
                 {playerData && playerData.games.length > 0 && (
                   <div className="flex flex-col items-center gap-2 text-cream/40">
