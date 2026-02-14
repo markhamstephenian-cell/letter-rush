@@ -1,4 +1,4 @@
-import { getDailyRandom } from "./daily";
+import { getRandomRng } from "./daily";
 
 export const ALL_CATEGORIES = [
   "Town",
@@ -30,8 +30,8 @@ export const ALL_CATEGORIES = [
 // Letters excluding difficult ones (Q, U, X, Z) for better gameplay
 const LETTERS = "ABCDEFGHIJKLMNOPRSTW".split("");
 
-export function getDailyPuzzle(date?: Date) {
-  const rand = getDailyRandom(date);
+export function getRandomPuzzle() {
+  const rand = getRandomRng();
 
   const letterIndex = Math.floor(rand() * LETTERS.length);
   const letter = LETTERS[letterIndex];

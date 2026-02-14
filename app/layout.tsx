@@ -11,9 +11,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Letter Rush - Daily Word Game",
+  title: "Letter Rush - The Quick Word Game",
   description:
-    "A daily word game. Get a letter, fill in the categories, beat the clock.",
+    "A quick word game. Get a letter, fill in the categories, beat the clock.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

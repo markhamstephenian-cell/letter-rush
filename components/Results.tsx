@@ -6,9 +6,10 @@ import { AnswerResult, calculateTotalScore, getAllCorrectBonus } from "@/lib/sco
 interface ResultsProps {
   results: AnswerResult[];
   onViewStats: () => void;
+  onPlayAgain: () => void;
 }
 
-export default function Results({ results, onViewStats }: ResultsProps) {
+export default function Results({ results, onViewStats, onPlayAgain }: ResultsProps) {
   const [revealedCount, setRevealedCount] = useState(0);
   const [showTotal, setShowTotal] = useState(false);
 
@@ -87,12 +88,20 @@ export default function Results({ results, onViewStats }: ResultsProps) {
               {validCount}/{results.length} correct
             </p>
           </div>
-          <button
-            onClick={onViewStats}
-            className="mt-4 w-full max-w-md rounded-xl bg-accent px-8 py-3.5 font-serif text-lg font-semibold text-navy transition-all active:scale-[0.98] sm:w-auto"
-          >
-            View Stats
-          </button>
+          <div className="mt-4 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
+            <button
+              onClick={onPlayAgain}
+              className="w-full rounded-xl bg-accent px-8 py-3.5 font-serif text-lg font-semibold text-navy transition-all active:scale-[0.98] sm:w-auto"
+            >
+              Play Again
+            </button>
+            <button
+              onClick={onViewStats}
+              className="w-full rounded-xl border border-white/10 px-8 py-3.5 font-serif text-lg text-cream/70 transition-all active:bg-white/5 sm:w-auto"
+            >
+              View Stats
+            </button>
+          </div>
         </div>
       )}
     </div>

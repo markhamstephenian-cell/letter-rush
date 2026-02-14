@@ -5,9 +5,10 @@ import { PlayerData } from "@/lib/storage";
 interface StatsProps {
   data: PlayerData;
   onBack: () => void;
+  onPlayAgain: () => void;
 }
 
-export default function Stats({ data, onBack }: StatsProps) {
+export default function Stats({ data, onBack, onPlayAgain }: StatsProps) {
   const avgScore =
     data.games.length > 0
       ? Math.round(data.totalScore / data.games.length)
@@ -21,12 +22,11 @@ export default function Stats({ data, onBack }: StatsProps) {
     <div className="flex flex-col items-center gap-8 py-8">
       <h2 className="font-serif text-2xl font-bold text-cream">Statistics</h2>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-3 gap-4">
         {[
           { label: "Played", value: data.games.length },
           { label: "Total Score", value: data.totalScore },
           { label: "Avg Score", value: avgScore },
-          { label: "Current Streak", value: data.currentStreak },
         ].map(({ label, value }) => (
           <div
             key={label}
@@ -41,12 +41,6 @@ export default function Stats({ data, onBack }: StatsProps) {
           </div>
         ))}
       </div>
-
-      {data.maxStreak > 0 && (
-        <p className="text-sm text-cream/40">
-          Best streak: {data.maxStreak} day{data.maxStreak !== 1 ? "s" : ""}
-        </p>
-      )}
 
       {recentGames.length > 0 && (
         <div className="w-full max-w-md">
@@ -76,12 +70,20 @@ export default function Stats({ data, onBack }: StatsProps) {
         </div>
       )}
 
-      <button
-        onClick={onBack}
-        className="mt-4 rounded-xl border border-white/10 px-8 py-3 font-serif text-lg text-cream/70 transition-all hover:bg-white/5"
-      >
-        Back
-      </button>
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <button
+          onClick={onPlayAgain}
+          className="rounded-xl bg-accent px-8 py-3 font-serif text-lg font-semibold text-navy transition-all active:scale-[0.98]"
+        >
+          Play Again
+        </button>
+        <button
+          onClick={onBack}
+          className="rounded-xl border border-white/10 px-8 py-3 font-serif text-lg text-cream/70 transition-all hover:bg-white/5"
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 }

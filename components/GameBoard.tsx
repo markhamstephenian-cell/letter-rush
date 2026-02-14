@@ -59,7 +59,7 @@ export default function GameBoard({
       <div className="flex flex-col items-center gap-6 py-8 sm:gap-8 sm:py-12">
         <div className="flex flex-col items-center gap-3">
           <p className="text-sm tracking-widest text-cream/50 uppercase">
-            Today&apos;s Letter
+            Your Letter
           </p>
           <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-2 border-accent/30 bg-accent/10 sm:h-28 sm:w-28">
             <span className="font-serif text-5xl font-bold text-accent sm:text-6xl">

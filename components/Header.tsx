@@ -7,7 +7,7 @@ export default function Header() {
         <h1 className="font-serif text-3xl font-bold tracking-tight text-cream">
           Letter Rush
         </h1>
-        <p className="mt-0.5 text-sm text-cream/50">A daily word game</p>
+        <p className="mt-0.5 text-sm text-cream/50">The quick word game</p>
       </div>
     </header>
   );

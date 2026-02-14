@@ -1,65 +1,35 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
 import Header from "@/components/Header";
 import GameBoard from "@/components/GameBoard";
 import Results from "@/components/Results";
 import Stats from "@/components/Stats";
-import { getDailyPuzzle } from "@/lib/categories";
+import Rules from "@/components/Rules";
+import { getRandomPuzzle } from "@/lib/categories";
 import { calculatePoints, AnswerResult, calculateTotalScore } from "@/lib/scoring";
 import {
   loadPlayerData,
   saveGameResult,
-  hasPlayedToday,
-  getTodayGame,
   PlayerData,
   GameRecord,
 } from "@/lib/storage";
-import { getTodayDateString, getOffsetDate } from "@/lib/daily";
+import { getGameId } from "@/lib/daily";
 
 type Screen = "landing" | "play" | "validating" | "results" | "stats";
 
 export default function Home() {
-  return (
-    <Suspense>
-      <HomeInner />
-    </Suspense>
-  );
-}
-
-function HomeInner() {
-  const searchParams = useSearchParams();
-  const dayOffset = parseInt(searchParams.get("day") || "0", 10) || 0;
-
   const [screen, setScreen] = useState<Screen>("landing");
   const [results, setResults] = useState<AnswerResult[]>([]);
-  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
-  const [todayGame, setTodayGame] = useState<GameRecord | null>(null);
+  const [playerData, setPlayerData] = useState<PlayerData>(() => loadPlayerData());
+  const [puzzle, setPuzzle] = useState(() => getRandomPuzzle());
+  const [showRules, setShowRules] = useState(false);
 
-  const simulatedDate = useMemo(() => getOffsetDate(dayOffset), [dayOffset]);
-  const dateStr = useMemo(() => {
-    if (dayOffset === 0) return getTodayDateString();
-    const d = simulatedDate;
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  }, [dayOffset, simulatedDate]);
-  const puzzle = useMemo(() => getDailyPuzzle(simulatedDate), [simulatedDate]);
-
-  useEffect(() => {
-    const data = loadPlayerData();
-    setPlayerData(data);
-    const existing = getTodayGame(dateStr);
-    if (existing) {
-      setTodayGame(existing);
-      setResults(existing.results);
-    } else {
-      setTodayGame(null);
-      setResults([]);
-    }
-    setScreen("landing");
-  }, [dateStr]);
-
-  const played = hasPlayedToday(dateStr);
+  const startNewGame = useCallback(() => {
+    setPuzzle(getRandomPuzzle());
+    setResults([]);
+    setScreen("play");
+  }, []);
 
   const handleSubmit = useCallback(
     async (answers: string[]) => {
@@ -90,7 +60,8 @@ function HomeInner() {
         setResults(answerResults);
 
         const record: GameRecord = {
-          date: dateStr,
+          id: getGameId(),
+          date: new Date().toISOString(),
           letter: puzzle.letter,
           categories: puzzle.categories,
           answers,
@@ -100,7 +71,6 @@ function HomeInner() {
 
         const updated = saveGameResult(record);
         setPlayerData(updated);
-        setTodayGame(record);
         setScreen("results");
       } catch {
         const fallbackResults: AnswerResult[] = puzzle.categories.map(
@@ -117,7 +87,8 @@ function HomeInner() {
         setResults(fallbackResults);
 
         const record: GameRecord = {
-          date: dateStr,
+          id: getGameId(),
+          date: new Date().toISOString(),
           letter: puzzle.letter,
           categories: puzzle.categories,
           answers,
@@ -127,11 +98,10 @@ function HomeInner() {
 
         const updated = saveGameResult(record);
         setPlayerData(updated);
-        setTodayGame(record);
         setScreen("results");
       }
     },
-    [dateStr, puzzle],
+    [puzzle],
   );
 
   return (
@@ -139,79 +109,43 @@ function HomeInner() {
       <div className="safe-top" />
       <Header />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
-        {dayOffset !== 0 && (
-          <div className="mb-4 rounded-lg border border-accent/20 bg-accent/5 px-3 py-2 text-center text-sm text-accent/70">
-            Test mode &middot; Day {dayOffset} &middot; {dateStr}
-          </div>
-        )}
-
         {screen === "landing" && (
           <div className="flex flex-col items-center gap-6 py-6 sm:gap-8 sm:py-8">
-            {played && todayGame ? (
-              <>
-                <div className="flex flex-col items-center gap-2">
-                  <p className="text-sm tracking-widest text-cream/50 uppercase">
-                    {dayOffset ? "Puzzle" : "Today\u2019s Puzzle"} Complete
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-sm tracking-widest text-cream/50 uppercase">
+                Ready to play?
+              </p>
+            </div>
+            <div className="flex w-full max-w-xs flex-col gap-3 sm:w-auto">
+              <button
+                onClick={startNewGame}
+                className="w-full rounded-xl bg-accent px-8 py-3.5 font-serif text-lg font-semibold text-navy transition-all active:scale-[0.98]"
+              >
+                Play
+              </button>
+              <button
+                onClick={() => setShowRules(true)}
+                className="w-full rounded-xl border border-white/10 px-8 py-3 font-serif text-lg text-cream/70 transition-all hover:bg-white/5 active:scale-[0.98]"
+              >
+                How to Play
+              </button>
+            </div>
+            <div className="flex flex-col items-center gap-2 text-cream/40">
+              {playerData.games.length > 0 && (
+                <>
+                  <p className="text-sm">
+                    Games played: {playerData.games.length} &middot; Total:{" "}
+                    {playerData.totalScore} pts
                   </p>
-                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-accent/30 bg-accent/10">
-                    <span className="font-serif text-4xl font-bold text-accent">
-                      {puzzle.letter}
-                    </span>
-                  </div>
-                  <p className="font-serif text-3xl font-bold text-accent">
-                    {todayGame.totalScore} pts
-                  </p>
-                  <p className="text-sm text-cream/40">
-                    {todayGame.results.filter((r) => r.valid).length}/
-                    {todayGame.results.length} correct
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setResults(todayGame.results);
-                    setScreen("results");
-                  }}
-                  className="w-full max-w-xs rounded-xl border border-white/10 px-6 py-3 text-cream/70 transition-all active:bg-white/5 sm:w-auto"
-                >
-                  View Results
-                </button>
-                <button
-                  onClick={() => setScreen("stats")}
-                  className="w-full max-w-xs rounded-xl border border-white/10 px-6 py-3 text-cream/70 transition-all active:bg-white/5 sm:w-auto"
-                >
-                  View Stats
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="flex flex-col items-center gap-2">
-                  <p className="text-sm tracking-widest text-cream/50 uppercase">
-                    Ready to play?
-                  </p>
-                </div>
-                <button
-                  onClick={() => setScreen("play")}
-                  className="w-full max-w-xs rounded-xl bg-accent px-8 py-3.5 font-serif text-lg font-semibold text-navy transition-all active:scale-[0.98] sm:w-auto"
-                >
-                  {dayOffset ? "Play This Puzzle" : "Play Today\u2019s Puzzle"}
-                </button>
-                {playerData && playerData.games.length > 0 && (
-                  <div className="flex flex-col items-center gap-2 text-cream/40">
-                    <p className="text-sm">
-                      Streak: {playerData.currentStreak} day
-                      {playerData.currentStreak !== 1 ? "s" : ""} &middot;
-                      Total: {playerData.totalScore} pts
-                    </p>
-                    <button
-                      onClick={() => setScreen("stats")}
-                      className="text-sm text-accent/70 hover:text-accent underline-offset-2 hover:underline"
-                    >
-                      View Stats
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+                  <button
+                    onClick={() => setScreen("stats")}
+                    className="text-sm text-accent/70 underline-offset-2 hover:text-accent hover:underline"
+                  >
+                    View Stats
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         )}
 
@@ -234,14 +168,20 @@ function HomeInner() {
           <Results
             results={results}
             onViewStats={() => setScreen("stats")}
+            onPlayAgain={startNewGame}
           />
         )}
 
-        {screen === "stats" && playerData && (
-          <Stats data={playerData} onBack={() => setScreen("landing")} />
+        {screen === "stats" && (
+          <Stats
+            data={playerData}
+            onBack={() => setScreen("landing")}
+            onPlayAgain={startNewGame}
+          />
         )}
       </main>
       <div className="safe-bottom" />
+      {showRules && <Rules onClose={() => setShowRules(false)} />}
     </div>
   );
 }
