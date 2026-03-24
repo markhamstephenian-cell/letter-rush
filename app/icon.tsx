@@ -33,45 +33,42 @@ export default function Icon() {
             display: "flex",
           }}
         />
-        {/* Ring */}
-        <div
+        {/* Top number */}
+        <span
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            border: "7px solid rgba(212, 165, 116, 0.35)",
-            background: "radial-gradient(circle, rgba(212,165,116,0.08) 0%, transparent 70%)",
+            fontSize: 160,
+            fontWeight: 700,
+            color: "#d4a574",
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            lineHeight: 1,
+            textShadow: "0 2px 16px rgba(212,165,116,0.3)",
           }}
         >
-          <span
-            style={{
-              fontSize: 195,
-              fontWeight: 700,
-              color: "#d4a574",
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              lineHeight: 1,
-              marginTop: -8,
-              textShadow: "0 2px 16px rgba(212,165,116,0.3)",
-            }}
-          >
-            L
-          </span>
-        </div>
+          6
+        </span>
+        {/* Divider */}
+        <div
+          style={{
+            width: 120,
+            height: 5,
+            borderRadius: 3,
+            background: "rgba(212,165,116,0.4)",
+            margin: "-4px 0",
+            display: "flex",
+          }}
+        />
         {/* Label */}
         <span
           style={{
-            fontSize: 34,
+            fontSize: 52,
             fontWeight: 700,
-            color: "rgba(245, 240, 232, 0.65)",
-            letterSpacing: 14,
-            marginTop: 18,
+            color: "rgba(245, 240, 232, 0.7)",
+            letterSpacing: 4,
+            marginTop: 2,
             fontFamily: "'Helvetica Neue', Arial, sans-serif",
           }}
         >
-          RUSH
+          in 60
         </span>
         {/* Bottom accent line */}
         <div

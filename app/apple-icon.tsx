@@ -31,45 +31,42 @@ export default function AppleIcon() {
             display: "flex",
           }}
         />
-        {/* Ring */}
-        <div
+        {/* Top number */}
+        <span
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 105,
-            height: 105,
-            borderRadius: "50%",
-            border: "2.5px solid rgba(212, 165, 116, 0.35)",
-            background: "radial-gradient(circle, rgba(212,165,116,0.08) 0%, transparent 70%)",
+            fontSize: 56,
+            fontWeight: 700,
+            color: "#d4a574",
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            lineHeight: 1,
+            textShadow: "0 1px 8px rgba(212,165,116,0.3)",
           }}
         >
-          <span
-            style={{
-              fontSize: 68,
-              fontWeight: 700,
-              color: "#d4a574",
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              lineHeight: 1,
-              marginTop: -2,
-              textShadow: "0 1px 8px rgba(212,165,116,0.3)",
-            }}
-          >
-            L
-          </span>
-        </div>
+          6
+        </span>
+        {/* Divider */}
+        <div
+          style={{
+            width: 42,
+            height: 2,
+            borderRadius: 1,
+            background: "rgba(212,165,116,0.4)",
+            margin: "-1px 0",
+            display: "flex",
+          }}
+        />
         {/* Label */}
         <span
           style={{
-            fontSize: 12,
+            fontSize: 18,
             fontWeight: 700,
-            color: "rgba(245, 240, 232, 0.65)",
-            letterSpacing: 5,
-            marginTop: 7,
+            color: "rgba(245, 240, 232, 0.7)",
+            letterSpacing: 1.5,
+            marginTop: 1,
             fontFamily: "'Helvetica Neue', Arial, sans-serif",
           }}
         >
-          RUSH
+          in 60
         </span>
         {/* Bottom accent line */}
         <div
