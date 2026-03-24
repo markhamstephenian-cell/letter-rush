@@ -54,6 +54,11 @@ export default function Results({ results, onViewStats, onPlayAgain }: ResultsPr
                 >
                   {result.answer || "(empty)"}
                 </p>
+                {revealed && !result.valid && result.suggestion && (
+                  <p className="text-xs text-cream/40 italic mt-0.5">
+                    Try: {result.suggestion}
+                  </p>
+                )}
               </div>
               {revealed && (
                 <div className="flex items-center gap-2">

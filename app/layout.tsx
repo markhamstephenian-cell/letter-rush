@@ -11,13 +11,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Letter Rush - The Quick Word Game",
+  title: "SixInSixty - The Quick Word Game",
   description:
-    "A quick word game. Get a letter, fill in the categories, beat the clock.",
+    "A quick word game. Get a letter, fill in 6 categories in 60 seconds.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Letter Rush",
+    title: "SixInSixty",
   },
   formatDetection: {
     telephone: false,

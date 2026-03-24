@@ -3,6 +3,7 @@ export interface AnswerResult {
   answer: string;
   valid: boolean;
   points: number;
+  suggestion?: string;
 }
 
 export function calculatePoints(answer: string, valid: boolean): number {

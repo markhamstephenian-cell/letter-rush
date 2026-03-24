@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Letter Rush",
-    short_name: "Letter Rush",
-    description: "A daily word game. Get a letter, fill in the categories, beat the clock.",
+    name: "SixInSixty",
+    short_name: "SixInSixty",
+    description: "6 categories. 1 letter. 60 seconds. How many can you get?",
     start_url: "/",
     display: "standalone",
     background_color: "#1a1f2e",

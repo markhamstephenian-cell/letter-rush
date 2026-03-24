@@ -18,6 +18,18 @@ import { getGameId } from "@/lib/daily";
 
 type Screen = "landing" | "play" | "validating" | "results" | "stats";
 
+// In native Capacitor app, call the hosted API; on web, use relative URL
+function getApiBase(): string {
+  if (
+    typeof window !== "undefined" &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).Capacitor
+  ) {
+    return "https://sixinsixty.netlify.app";
+  }
+  return "";
+}
+
 export default function Home() {
   const [screen, setScreen] = useState<Screen>("landing");
   const [results, setResults] = useState<AnswerResult[]>([]);
@@ -42,7 +54,7 @@ export default function Home() {
           letter: puzzle.letter,
         }));
 
-        const res = await fetch("/api/validate", {
+        const res = await fetch(`${getApiBase()}/api/validate`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ answers: payload }),
@@ -51,7 +63,7 @@ export default function Home() {
         const data = await res.json();
 
         const answerResults: AnswerResult[] = data.results.map(
-          (r: { category: string; answer: string; valid: boolean }) => ({
+          (r: { category: string; answer: string; valid: boolean; suggestion?: string }) => ({
             ...r,
             points: calculatePoints(r.answer, r.valid),
           }),
