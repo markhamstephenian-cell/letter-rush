@@ -72,16 +72,9 @@ export default function GameBoard({
             Fill in a word starting with <strong className="text-accent">{letter}</strong> for
             each category. You have 60 seconds.
           </p>
-          <div className="mt-2 flex flex-wrap justify-center gap-1.5 sm:gap-2">
-            {categories.map((cat) => (
-              <span
-                key={cat}
-                className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-cream/60 sm:px-3 sm:text-sm"
-              >
-                {cat}
-              </span>
-            ))}
-          </div>
+          <p className="text-cream/50 text-xs mt-1">
+            Categories will appear when the timer starts.
+          </p>
         </div>
         <button
           onClick={handleStart}

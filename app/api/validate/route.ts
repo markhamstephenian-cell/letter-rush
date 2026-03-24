@@ -413,6 +413,59 @@ function titleMatches(searchTitle: string, term: string): boolean {
   return false;
 }
 
+// Generic short words that exist on Wikipedia but are not valid answers for most categories.
+// These get matched too easily because their Wikipedia articles are long and mention many topics.
+// We allow them ONLY for categories where they are genuinely a direct match (e.g. "Dog" for Animal).
+const GENERIC_WORD_ALLOWED_CATEGORIES: Record<string, string[]> = {
+  dog: ["Animal"],
+  cat: ["Animal"],
+  bat: ["Animal", "Sport"],
+  bug: ["Animal"],
+  fly: ["Animal"],
+  rat: ["Animal"],
+  hen: ["Animal"],
+  cow: ["Animal"],
+  pig: ["Animal"],
+  eel: ["Animal"],
+  owl: ["Animal"],
+  yak: ["Animal"],
+  ant: ["Animal"],
+  bee: ["Animal"],
+  ram: ["Animal"],
+  elk: ["Animal"],
+  emu: ["Animal"],
+  fox: ["Animal"],
+  cod: ["Animal", "Food/Dish"],
+  ham: ["Food/Dish"],
+  jam: ["Food/Dish"],
+  pie: ["Food/Dish"],
+  tea: ["Food/Dish"],
+  ale: ["Food/Dish"],
+  gin: ["Food/Dish"],
+  rum: ["Food/Dish"],
+  rye: ["Food/Dish", "Plant/Flower"],
+  fig: ["Food/Dish", "Plant/Flower"],
+  cap: ["Article of Clothing"],
+  hat: ["Article of Clothing"],
+  bow: ["Article of Clothing", "Musical Instrument"],
+  tag: ["Sport"],
+  go: ["Board Game"],
+  war: ["Board Game"],
+  set: ["Board Game"],
+  oak: ["Plant/Flower"],
+  elm: ["Plant/Flower"],
+  ivy: ["Plant/Flower"],
+  bay: ["Body of Water", "Plant/Flower"],
+  run: ["Sport"],
+};
+
+function isGenericWordBlocked(answer: string, gameCategory: string): boolean {
+  const lower = answer.trim().toLowerCase();
+  const allowed = GENERIC_WORD_ALLOWED_CATEGORIES[lower];
+  if (!allowed) return false; // not in the generic list, so not blocked
+  return !allowed.includes(gameCategory); // blocked if category is NOT in the allowed list
+}
+
 function textMatchesCategory(
   text: string,
   categories: string[],
@@ -422,7 +475,10 @@ function textMatchesCategory(
   if (!keywords) return false;
 
   const combined = (text + " " + categories.join(" ")).toLowerCase();
-  return keywords.some((kw) => combined.includes(kw));
+
+  // Require at least 2 keyword matches for better accuracy
+  const matchCount = keywords.filter((kw) => combined.includes(kw)).length;
+  return matchCount >= 2;
 }
 
 async function checkDatamuse(
@@ -510,6 +566,9 @@ async function validateAnswer(
 
   // Must be at least 2 characters
   if (trimmed.length < 2) return false;
+
+  // Block generic short words that don't genuinely belong to this category
+  if (isGenericWordBlocked(trimmed, category)) return false;
 
   // Strategy 0: Fast-path known-good lists (no API calls needed)
   const lower = trimmed.toLowerCase();
