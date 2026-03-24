@@ -80,10 +80,10 @@ export default function SupportPage() {
             If you have questions, feedback, or need help, reach out to us at:
           </p>
           <a
-            href="mailto:support@sixinsixty.com"
+            href="mailto:markhamstephenian@gmail.com"
             className="mt-2 inline-block text-accent underline underline-offset-2 hover:text-accent/80"
           >
-            support@sixinsixty.com
+            markhamstephenian@gmail.com
           </a>
         </section>
 
