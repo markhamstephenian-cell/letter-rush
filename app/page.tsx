@@ -63,7 +63,7 @@ export default function Home() {
         const data = await res.json();
 
         const answerResults: AnswerResult[] = data.results.map(
-          (r: { category: string; answer: string; valid: boolean; suggestion?: string }) => ({
+          (r: { category: string; answer: string; valid: boolean; suggestion?: string; reason?: string }) => ({
             ...r,
             points: calculatePoints(r.answer, r.valid),
           }),

@@ -54,6 +54,11 @@ export default function Results({ results, onViewStats, onPlayAgain }: ResultsPr
                 >
                   {result.answer || "(empty)"}
                 </p>
+                {revealed && result.reason && (
+                  <p className={`text-xs italic mt-0.5 ${result.valid ? "text-green-400/60" : "text-red-300/60"}`}>
+                    {result.reason}
+                  </p>
+                )}
                 {revealed && !result.valid && result.suggestion && (
                   <p className="text-xs text-cream/40 italic mt-0.5">
                     Try: {result.suggestion}

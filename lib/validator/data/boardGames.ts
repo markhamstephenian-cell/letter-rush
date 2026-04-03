@@ -1,0 +1,23 @@
+/** Board games and tabletop games */
+export const BOARD_GAMES = new Set([
+  "aggravation","acquire","azul",
+  "backgammon","balderdash","battleship","blokus","boggle",
+  "candyland","candy land","carcassonne","catan","checkers","chess","chinese checkers","chutes and ladders","clue","cluedo","codenames","connect four","cranium",
+  "diplomacy","dominion","dominoes","draughts",
+  "eldritch horror","everdell",
+  "game of life","go","guess who",
+  "hungry hungry hippos",
+  "jenga",
+  "kerplunk",
+  "life","ludo",
+  "mahjong","mancala","mastermind","monopoly","mouse trap","mousetrap","mysterium",
+  "operation","othello",
+  "pandemic","parcheesi","payday","perfection","pictionary","puerto rico",
+  "qwirkle",
+  "risk",
+  "scattergories","scotland yard","scrabble","sequence","settlers of catan","snakes and ladders","sorry","splendor","stratego","subbuteo",
+  "taboo","ticket to ride","trivial pursuit","trouble","twilight imperium",
+  "uno","upwords",
+  "wingspan",
+  "yahtzee",
+]);
